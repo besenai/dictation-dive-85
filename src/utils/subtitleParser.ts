@@ -7,32 +7,43 @@ export interface Subtitle {
 
 export const parseSRT = (srtContent: string): Subtitle[] => {
   const subtitles: Subtitle[] = [];
-  // Split content by double newline to separate subtitle blocks
-  const blocks = srtContent.trim().split('\n\n');
+  
+  // Normalize line endings and split content by double newline
+  const normalizedContent = srtContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const blocks = normalizedContent.trim().split('\n\n');
 
   blocks.forEach((block) => {
-    const lines = block.split('\n');
+    // Split block into lines and remove empty lines
+    const lines = block.split('\n').filter(line => line.trim() !== '');
     if (lines.length < 3) return;
 
-    // Parse the subtitle index
+    // Parse the subtitle index (should be a number)
     const id = parseInt(lines[0]);
-    
+    if (isNaN(id)) return;
+
     // Parse the timestamp line
-    const times = lines[1].split(' --> ');
-    
-    // Get only the text content, joining multiple lines if necessary
-    // Remove any HTML tags that might be present in subtitles
-    const text = lines.slice(2)
+    const timestampLine = lines[1].trim();
+    const timestampMatch = timestampLine.match(/(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/);
+    if (!timestampMatch) return;
+
+    // Get the text content (all remaining lines)
+    const textLines = lines.slice(2);
+    // Clean the text: remove HTML tags, normalize whitespace, and trim
+    const text = textLines
       .join(' ')
-      .replace(/<[^>]*>/g, '')
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/\{[^}]*\}/g, '') // Remove curly brace content like {F6}
+      .replace(/\[[^\]]*\]/g, '') // Remove square bracket content like [applause]
+      .replace(/\([^)]*\)/g, '') // Remove parentheses content like (laughing)
+      .replace(/\s+/g, ' ') // Normalize whitespace
       .trim();
 
-    const startTime = timeToMilliseconds(times[0]);
-    const endTime = timeToMilliseconds(times[1]);
+    if (!text) return; // Skip if no text content
 
-    if (!isNaN(id) && text) {
-      subtitles.push({ id, text, startTime, endTime });
-    }
+    const startTime = timeToMilliseconds(timestampMatch[1]);
+    const endTime = timeToMilliseconds(timestampMatch[2]);
+
+    subtitles.push({ id, text, startTime, endTime });
   });
 
   // Sort subtitles by their ID to ensure correct order
