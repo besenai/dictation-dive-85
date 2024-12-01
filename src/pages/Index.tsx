@@ -68,12 +68,20 @@ const Index = () => {
     const currentSubtitle = subtitles[currentIndex];
     if (!currentSubtitle) return;
     
+    // Cancel any ongoing speech
     if (synth.speaking) {
       synth.cancel();
     }
     
     const utterance = new SpeechSynthesisUtterance(currentSubtitle.text);
     utterance.lang = selectedLanguage;
+    
+    // Add event listener to handle when speech ends
+    utterance.onend = () => {
+      // Speech has finished
+      console.log('Speech finished');
+    };
+    
     synth.speak(utterance);
   };
 
@@ -98,6 +106,11 @@ const Index = () => {
   };
 
   const nextSentence = () => {
+    // Cancel any ongoing speech before moving to next sentence
+    if (synth.speaking) {
+      synth.cancel();
+    }
+    
     if (currentIndex < subtitles.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setUserInput('');
@@ -129,7 +142,7 @@ const Index = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500">
-                  Sentence {subtitles[currentIndex].id} of {subtitles[subtitles.length - 1].id}
+                  Sentence {currentIndex + 1} of {subtitles.length}
                 </span>
                 <div className="flex items-center gap-4">
                   <Select
