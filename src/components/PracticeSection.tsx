@@ -63,22 +63,14 @@ export const PracticeSection = ({
         <div className="space-y-2">
           <Button
             onClick={startSpeechRecognition}
-            className={`w-full flex items-center justify-center gap-2 transition-colors ${
+            className={`w-full flex items-center justify-center gap-2 ${
               isListening 
                 ? 'bg-primary text-white' 
-                : 'bg-white hover:bg-primary hover:text-white border border-primary/20'
+                : 'bg-primary text-white hover:bg-primary/90'
             }`}
           >
             <Mic className="h-4 w-4" />
             Voice Input
-          </Button>
-
-          <Button
-            onClick={onCheckAnswer}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
-            disabled={showResult}
-          >
-            Check Answer
           </Button>
         </div>
 
@@ -90,6 +82,14 @@ export const PracticeSection = ({
             className="w-full pr-12 border-2 focus:border-primary/50 transition-colors"
           />
         </div>
+
+        <Button
+          onClick={onCheckAnswer}
+          className="w-full bg-primary hover:bg-primary/90 text-white font-medium"
+          disabled={showResult}
+        >
+          Check Answer
+        </Button>
 
         {showResult && (
           <div className={`p-6 rounded-lg ${
