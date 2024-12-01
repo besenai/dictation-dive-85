@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { parseSRT, type Subtitle } from '@/utils/subtitleParser';
 import { SubtitleControls } from '@/components/SubtitleControls';
+import { PracticeSection } from '@/components/PracticeSection';
 
 const Index = () => {
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
@@ -121,10 +121,6 @@ const Index = () => {
     setShowResult(false);
   };
 
-  const handleSpeechInput = (text: string) => {
-    setUserInput(text);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-secondary p-4 sm:p-8">
       <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
@@ -164,39 +160,18 @@ const Index = () => {
                 onJumpTo={jumpToSentence}
                 speechRate={speechRate}
                 onSpeechRateChange={setSpeechRate}
-                onUserInput={handleSpeechInput}
+                onUserInput={setUserInput}
               />
             </div>
 
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 space-y-4">
-              <div className="relative">
-                <Input
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Type what you hear..."
-                  className="w-full pr-12 border-2 focus:border-primary/50 transition-colors"
-                />
-              </div>
-
-              <Button
-                onClick={checkAnswer}
-                className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
-                disabled={showResult}
-              >
-                Check Answer
-              </Button>
-
-              {showResult && (
-                <div className={`p-6 rounded-lg ${
-                  userInput.trim().toLowerCase() === subtitles[currentIndex].text.trim().toLowerCase()
-                    ? 'bg-green-50 border border-green-200 text-green-800'
-                    : 'bg-red-50 border border-red-200 text-red-800'
-                }`}>
-                  <p className="font-medium mb-2">Correct answer:</p>
-                  <p className="text-lg">{subtitles[currentIndex].text}</p>
-                </div>
-              )}
-            </div>
+            <PracticeSection
+              currentSubtitle={subtitles[currentIndex]}
+              userInput={userInput}
+              setUserInput={setUserInput}
+              showResult={showResult}
+              onCheckAnswer={checkAnswer}
+              selectedLanguage={selectedLanguage}
+            />
           </div>
         )}
       </div>
