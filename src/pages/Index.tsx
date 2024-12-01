@@ -23,11 +23,7 @@ const Index = () => {
       const parsed = parseSRT(text);
       
       if (parsed.length === 0) {
-        toast({
-          title: "Error",
-          description: "No valid subtitles found in the file",
-          variant: "destructive",
-        });
+        toast.error("No valid subtitles found in the file");
         return;
       }
 
@@ -35,16 +31,9 @@ const Index = () => {
       setCurrentIndex(0);
       setUserInput('');
       setShowResult(false);
-      toast({
-        title: "Success",
-        description: `Loaded ${parsed.length} sentences`,
-      });
+      toast.success(`Loaded ${parsed.length} sentences`);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to parse subtitle file",
-        variant: "destructive",
-      });
+      toast.error("Failed to parse subtitle file");
     }
   };
 
@@ -74,16 +63,9 @@ const Index = () => {
     const correct = userInput.trim().toLowerCase() === subtitles[currentIndex].text.trim().toLowerCase();
     
     if (correct) {
-      toast({
-        title: "Correct!",
-        description: "Well done! You can now move to the next sentence.",
-      });
+      toast.success("Well done! You can now move to the next sentence.");
     } else {
-      toast({
-        title: "Not quite right",
-        description: "Try again or check the correct answer below.",
-        variant: "destructive",
-      });
+      toast.error("Try again or check the correct answer below.");
     }
   };
 
