@@ -60,17 +60,27 @@ export const PracticeSection = ({
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 space-y-4 animate-fade-in">
       <div className="space-y-4">
-        <Button
-          onClick={startSpeechRecognition}
-          className={`w-full flex items-center justify-center gap-2 transition-colors ${
-            isListening 
-              ? 'bg-primary text-white' 
-              : 'bg-white hover:bg-primary hover:text-white border border-primary/20'
-          }`}
-        >
-          <Mic className="h-4 w-4" />
-          Voice Input
-        </Button>
+        <div className="space-y-2">
+          <Button
+            onClick={startSpeechRecognition}
+            className={`w-full flex items-center justify-center gap-2 transition-colors ${
+              isListening 
+                ? 'bg-primary text-white' 
+                : 'bg-white hover:bg-primary hover:text-white border border-primary/20'
+            }`}
+          >
+            <Mic className="h-4 w-4" />
+            Voice Input
+          </Button>
+
+          <Button
+            onClick={onCheckAnswer}
+            className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
+            disabled={showResult}
+          >
+            Check Answer
+          </Button>
+        </div>
 
         <div className="relative">
           <Input
@@ -81,22 +91,14 @@ export const PracticeSection = ({
           />
         </div>
 
-        <Button
-          onClick={onCheckAnswer}
-          className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
-          disabled={showResult}
-        >
-          Check Answer
-        </Button>
-
         {showResult && (
           <div className={`p-6 rounded-lg ${
             userInput.trim().toLowerCase() === currentSubtitle.text.trim().toLowerCase()
-              ? 'bg-green-50 border border-green-200 text-green-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
+              ? 'bg-green-50 border border-green-200'
+              : 'bg-red-50 border border-red-200'
           }`}>
-            <p className="font-medium mb-2">Correct answer:</p>
-            <p className="text-lg">{currentSubtitle.text}</p>
+            <p className="font-medium mb-2 text-gray-900">Correct answer:</p>
+            <p className="text-lg text-gray-900">{currentSubtitle.text}</p>
           </div>
         )}
       </div>
