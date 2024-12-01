@@ -152,18 +152,19 @@ export const SubtitleControls = ({
       </div>
 
       <div className="space-y-4">
+        <Button
+          variant="outline"
+          onClick={startSpeechRecognition}
+          className={`w-full flex items-center justify-center gap-2 ${
+            isListening ? 'bg-primary text-white' : ''
+          }`}
+        >
+          <Mic className="h-4 w-4" />
+          Voice Input
+        </Button>
+        
         <div className="w-full relative">
           {/* This space is reserved for the text input and check answer button */}
-          <Button
-            variant="outline"
-            size="icon"
-            className={`absolute right-2 top-1/2 -translate-y-1/2 ${
-              isListening ? 'bg-primary text-white' : ''
-            }`}
-            onClick={startSpeechRecognition}
-          >
-            <Mic className="h-4 w-4" />
-          </Button>
         </div>
         
         <div className="flex gap-4">
