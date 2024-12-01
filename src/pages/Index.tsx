@@ -3,24 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { parseSRT, type Subtitle } from '@/utils/subtitleParser';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-const LANGUAGES = [
-  { code: 'en-US', name: 'English' },
-  { code: 'es-ES', name: 'Spanish' },
-  { code: 'fr-FR', name: 'French' },
-  { code: 'de-DE', name: 'German' },
-  { code: 'it-IT', name: 'Italian' },
-  { code: 'ja-JP', name: 'Japanese' },
-  { code: 'ko-KR', name: 'Korean' },
-  { code: 'zh-CN', name: 'Chinese (Simplified)' },
-];
+import { SubtitleControls } from '@/components/SubtitleControls';
 
 const Index = () => {
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
@@ -28,6 +11,7 @@ const Index = () => {
   const [userInput, setUserInput] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en-US');
+  const [speechRate, setSpeechRate] = useState(1.0);
   const synth = window.speechSynthesis;
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,17 +52,15 @@ const Index = () => {
     const currentSubtitle = subtitles[currentIndex];
     if (!currentSubtitle) return;
     
-    // Cancel any ongoing speech
     if (synth.speaking) {
       synth.cancel();
     }
     
     const utterance = new SpeechSynthesisUtterance(currentSubtitle.text);
     utterance.lang = selectedLanguage;
+    utterance.rate = speechRate;
     
-    // Add event listener to handle when speech ends
     utterance.onend = () => {
-      // Speech has finished
       console.log('Speech finished');
     };
     
@@ -106,7 +88,6 @@ const Index = () => {
   };
 
   const nextSentence = () => {
-    // Cancel any ongoing speech before moving to next sentence
     if (synth.speaking) {
       synth.cancel();
     }
@@ -116,6 +97,28 @@ const Index = () => {
       setUserInput('');
       setShowResult(false);
     }
+  };
+
+  const previousSentence = () => {
+    if (synth.speaking) {
+      synth.cancel();
+    }
+    
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+      setUserInput('');
+      setShowResult(false);
+    }
+  };
+
+  const jumpToSentence = (index: number) => {
+    if (synth.speaking) {
+      synth.cancel();
+    }
+    
+    setCurrentIndex(index);
+    setUserInput('');
+    setShowResult(false);
   };
 
   return (
@@ -139,63 +142,34 @@ const Index = () => {
           </div>
         ) : (
           <div className="bg-white p-8 rounded-lg shadow-md animate-slide-up">
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">
-                  Sentence {currentIndex + 1} of {subtitles.length}
-                </span>
-                <div className="flex items-center gap-4">
-                  <Select
-                    value={selectedLanguage}
-                    onValueChange={setSelectedLanguage}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {LANGUAGES.map((lang) => (
-                        <SelectItem key={lang.code} value={lang.code}>
-                          {lang.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    variant="outline"
-                    onClick={playCurrentSentence}
-                    className="flex items-center gap-2"
-                  >
-                    Play Audio
-                  </Button>
-                </div>
-              </div>
+            <SubtitleControls
+              currentIndex={currentIndex}
+              totalSubtitles={subtitles.length}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={setSelectedLanguage}
+              onPlayAudio={playCurrentSentence}
+              onNext={nextSentence}
+              onBack={previousSentence}
+              onJumpTo={jumpToSentence}
+              speechRate={speechRate}
+              onSpeechRateChange={setSpeechRate}
+            />
 
-              <div className="space-y-4">
-                <Input
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Type what you hear..."
-                  className="w-full"
-                />
+            <div className="space-y-4 mt-6">
+              <Input
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                placeholder="Type what you hear..."
+                className="w-full"
+              />
 
-                <div className="flex gap-4">
-                  <Button
-                    onClick={checkAnswer}
-                    className="flex-1"
-                    disabled={showResult}
-                  >
-                    Check Answer
-                  </Button>
-                  <Button
-                    onClick={nextSentence}
-                    variant="outline"
-                    className="flex-1"
-                    disabled={currentIndex === subtitles.length - 1 || !showResult}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
+              <Button
+                onClick={checkAnswer}
+                className="w-full"
+                disabled={showResult}
+              >
+                Check Answer
+              </Button>
 
               {showResult && (
                 <div className={`p-4 rounded-md ${
