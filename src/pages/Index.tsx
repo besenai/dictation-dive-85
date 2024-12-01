@@ -37,6 +37,16 @@ const Index = () => {
     try {
       const text = await file.text();
       const parsed = parseSRT(text);
+      
+      if (parsed.length === 0) {
+        toast({
+          title: "Error",
+          description: "No valid subtitles found in the file",
+          variant: "destructive",
+        });
+        return;
+      }
+
       setSubtitles(parsed);
       setCurrentIndex(0);
       setUserInput('');
@@ -55,18 +65,21 @@ const Index = () => {
   };
 
   const playCurrentSentence = () => {
-    if (!subtitles[currentIndex]) return;
+    const currentSubtitle = subtitles[currentIndex];
+    if (!currentSubtitle) return;
     
     if (synth.speaking) {
       synth.cancel();
     }
     
-    const utterance = new SpeechSynthesisUtterance(subtitles[currentIndex].text);
+    const utterance = new SpeechSynthesisUtterance(currentSubtitle.text);
     utterance.lang = selectedLanguage;
     synth.speak(utterance);
   };
 
   const checkAnswer = () => {
+    if (!subtitles[currentIndex]) return;
+    
     setShowResult(true);
     const correct = userInput.trim().toLowerCase() === subtitles[currentIndex].text.trim().toLowerCase();
     
@@ -116,7 +129,7 @@ const Index = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500">
-                  Sentence {currentIndex + 1} of {subtitles.length}
+                  Sentence {subtitles[currentIndex].id} of {subtitles[subtitles.length - 1].id}
                 </span>
                 <div className="flex items-center gap-4">
                   <Select
