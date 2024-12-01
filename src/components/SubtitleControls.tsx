@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 
 interface SubtitleControlsProps {
   currentIndex: number;
@@ -55,7 +54,7 @@ export const SubtitleControls = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
         <span className="text-sm text-gray-500">
           Sentence {currentIndex + 1} of {totalSubtitles}
@@ -73,48 +72,53 @@ export const SubtitleControls = ({
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={onPlayAudio} className="flex items-center gap-2">
-            Play Audio
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={onPlayAudio} className="flex items-center gap-2">
+              Play Audio
+            </Button>
+            <Select 
+              value={speechRate.toString()} 
+              onValueChange={(value) => onSpeechRateChange(parseFloat(value))}
+            >
+              <SelectTrigger className="w-[80px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SPEECH_RATES.map((rate) => (
+                  <SelectItem key={rate} value={rate.toString()}>
+                    {rate}x
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
+      <div className="flex justify-center">
+        <Input
+          type="number"
+          min={1}
+          max={totalSubtitles}
+          placeholder="Jump to sentence..."
+          onChange={handleJumpToChange}
+          className="w-[200px]"
+        />
+      </div>
+
       <div className="space-y-4">
+        <div className="w-full">
+          {/* This space is reserved for the text input and check answer button 
+              which are managed by the parent component */}
+        </div>
+        
         <div className="flex gap-4">
-          <Button onClick={onBack} variant="outline" disabled={currentIndex === 0}>
+          <Button onClick={onBack} variant="outline" disabled={currentIndex === 0} className="flex-1">
             Back
           </Button>
-          <Button onClick={onNext} variant="outline" disabled={currentIndex === totalSubtitles - 1}>
+          <Button onClick={onNext} variant="outline" disabled={currentIndex === totalSubtitles - 1} className="flex-1">
             Next
           </Button>
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm text-gray-500">Jump to sentence:</label>
-          <Input
-            type="number"
-            min={1}
-            max={totalSubtitles}
-            placeholder="Enter sentence number"
-            onChange={handleJumpToChange}
-            className="w-full"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm text-gray-500">Speech Rate: {speechRate}x</label>
-          <Select value={speechRate.toString()} onValueChange={(value) => onSpeechRateChange(parseFloat(value))}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select speed" />
-            </SelectTrigger>
-            <SelectContent>
-              {SPEECH_RATES.map((rate) => (
-                <SelectItem key={rate} value={rate.toString()}>
-                  {rate}x
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
       </div>
     </div>
