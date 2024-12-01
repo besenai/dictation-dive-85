@@ -108,7 +108,7 @@ export const SubtitleControls = ({
             max={totalSubtitles}
             value={jumpToValue}
             onChange={handleJumpToChange}
-            className="w-[100px]"
+            className="w-[80px]"
           />
         </div>
         <div className="flex items-center gap-4">
@@ -136,7 +136,7 @@ export const SubtitleControls = ({
               value={speechRate.toString()} 
               onValueChange={(value) => onSpeechRateChange(parseFloat(value))}
             >
-              <SelectTrigger className="w-[80px]">
+              <SelectTrigger className="w-[60px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -152,17 +152,6 @@ export const SubtitleControls = ({
       </div>
 
       <div className="space-y-4">
-        <Button
-          variant="outline"
-          onClick={startSpeechRecognition}
-          className={`w-full flex items-center justify-center gap-2 ${
-            isListening ? 'bg-primary text-white' : ''
-          }`}
-        >
-          <Mic className="h-4 w-4" />
-          Voice Input
-        </Button>
-        
         <div className="w-full relative">
           {/* This space is reserved for the text input and check answer button */}
         </div>
@@ -185,6 +174,17 @@ export const SubtitleControls = ({
             Next
           </Button>
         </div>
+
+        <Button
+          variant="outline"
+          onClick={startSpeechRecognition}
+          className={`w-full flex items-center justify-center gap-2 ${
+            isListening ? 'bg-primary text-white' : ''
+          }`}
+        >
+          <Mic className="h-4 w-4" />
+          Voice Input
+        </Button>
       </div>
     </div>
   );
