@@ -96,24 +96,27 @@ export const SubtitleControls = ({
   };
 
   return (
-    <div className="space-y-4 bg-white rounded-lg shadow-sm p-6">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">
-            Sentence {currentIndex + 1} of {totalSubtitles}
-          </span>
-          <Input
-            type="number"
-            min={1}
-            max={totalSubtitles}
-            value={jumpToValue}
-            onChange={handleJumpToChange}
-            className="w-[80px]"
-          />
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-lg">
+            <span className="text-sm font-medium text-secondary-foreground">
+              {currentIndex + 1} / {totalSubtitles}
+            </span>
+            <Input
+              type="number"
+              min={1}
+              max={totalSubtitles}
+              value={jumpToValue}
+              onChange={handleJumpToChange}
+              className="w-[80px] bg-white/80"
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-4">
+
+        <div className="flex items-center justify-end gap-3">
           <Select value={selectedLanguage} onValueChange={onLanguageChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[140px] bg-white/80">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
@@ -124,11 +127,12 @@ export const SubtitleControls = ({
               ))}
             </SelectContent>
           </Select>
+
           <div className="flex items-center gap-2">
             <Button 
               variant="outline" 
-              onClick={onPlayAudio} 
-              className="flex items-center gap-2 hover:bg-primary hover:text-white transition-colors"
+              onClick={onPlayAudio}
+              className="bg-white/80 hover:bg-primary hover:text-white transition-colors"
             >
               Play Audio
             </Button>
@@ -136,7 +140,7 @@ export const SubtitleControls = ({
               value={speechRate.toString()} 
               onValueChange={(value) => onSpeechRateChange(parseFloat(value))}
             >
-              <SelectTrigger className="w-[60px]">
+              <SelectTrigger className="w-[60px] bg-white/80">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -152,24 +156,20 @@ export const SubtitleControls = ({
       </div>
 
       <div className="space-y-4">
-        <div className="w-full relative">
-          {/* This space is reserved for the text input and check answer button */}
-        </div>
-        
-        <div className="flex gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <Button 
             onClick={onBack} 
             variant="outline" 
-            disabled={currentIndex === 0} 
-            className="flex-1 hover:bg-primary hover:text-white transition-colors"
+            disabled={currentIndex === 0}
+            className="bg-white/80 hover:bg-primary hover:text-white transition-colors"
           >
             Back
           </Button>
           <Button 
             onClick={onNext} 
             variant="outline" 
-            disabled={currentIndex === totalSubtitles - 1} 
-            className="flex-1 hover:bg-primary hover:text-white transition-colors"
+            disabled={currentIndex === totalSubtitles - 1}
+            className="bg-white/80 hover:bg-primary hover:text-white transition-colors"
           >
             Next
           </Button>
@@ -178,9 +178,9 @@ export const SubtitleControls = ({
         <Button
           variant="outline"
           onClick={startSpeechRecognition}
-          className={`w-full flex items-center justify-center gap-2 ${
-            isListening ? 'bg-primary text-white' : ''
-          }`}
+          className={`w-full flex items-center justify-center gap-2 bg-white/80 ${
+            isListening ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'
+          } transition-colors`}
         >
           <Mic className="h-4 w-4" />
           Voice Input

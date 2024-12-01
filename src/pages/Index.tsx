@@ -126,66 +126,74 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-secondary p-4 sm:p-8">
-      <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary mb-4">Language Learning</h1>
-          <p className="text-secondary-foreground">Practice your listening and writing skills</p>
+    <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-secondary p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+            Language Learning
+          </h1>
+          <p className="text-secondary-foreground/80 text-lg">
+            Enhance your language skills through interactive practice
+          </p>
         </div>
 
         {subtitles.length === 0 ? (
-          <div className="bg-white p-8 rounded-lg shadow-md text-center animate-slide-up">
-            <h2 className="text-xl font-semibold mb-4">Upload Subtitles</h2>
-            <Input
-              type="file"
-              accept=".srt"
-              onChange={handleFileUpload}
-              className="mb-4"
-            />
-            <p className="text-sm text-gray-500">Upload an SRT file to begin practice</p>
+          <div className="bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-lg text-center animate-slide-up">
+            <h2 className="text-2xl font-semibold mb-6 text-primary">Upload Subtitles</h2>
+            <div className="max-w-md mx-auto">
+              <Input
+                type="file"
+                accept=".srt"
+                onChange={handleFileUpload}
+                className="mb-4 border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors rounded-lg p-8"
+              />
+              <p className="text-sm text-gray-500">Upload an SRT file to begin your practice session</p>
+            </div>
           </div>
         ) : (
-          <div className="bg-white p-8 rounded-lg shadow-md animate-slide-up">
-            <SubtitleControls
-              currentIndex={currentIndex}
-              totalSubtitles={subtitles.length}
-              selectedLanguage={selectedLanguage}
-              onLanguageChange={setSelectedLanguage}
-              onPlayAudio={playCurrentSentence}
-              onNext={nextSentence}
-              onBack={previousSentence}
-              onJumpTo={jumpToSentence}
-              speechRate={speechRate}
-              onSpeechRateChange={setSpeechRate}
-              onUserInput={handleSpeechInput}
-            />
+          <div className="space-y-6 animate-slide-up">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
+              <SubtitleControls
+                currentIndex={currentIndex}
+                totalSubtitles={subtitles.length}
+                selectedLanguage={selectedLanguage}
+                onLanguageChange={setSelectedLanguage}
+                onPlayAudio={playCurrentSentence}
+                onNext={nextSentence}
+                onBack={previousSentence}
+                onJumpTo={jumpToSentence}
+                speechRate={speechRate}
+                onSpeechRateChange={setSpeechRate}
+                onUserInput={handleSpeechInput}
+              />
+            </div>
 
-            <div className="space-y-4 mt-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 space-y-4">
               <div className="relative">
                 <Input
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
                   placeholder="Type what you hear..."
-                  className="w-full pr-12"
+                  className="w-full pr-12 border-2 focus:border-primary/50 transition-colors"
                 />
               </div>
 
               <Button
                 onClick={checkAnswer}
-                className="w-full bg-primary hover:bg-primary/90 text-white"
+                className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
                 disabled={showResult}
               >
                 Check Answer
               </Button>
 
               {showResult && (
-                <div className={`p-4 rounded-md ${
+                <div className={`p-6 rounded-lg ${
                   userInput.trim().toLowerCase() === subtitles[currentIndex].text.trim().toLowerCase()
-                    ? 'bg-green-50 text-green-800'
-                    : 'bg-red-50 text-red-800'
+                    ? 'bg-green-50 border border-green-200 text-green-800'
+                    : 'bg-red-50 border border-red-200 text-red-800'
                 }`}>
-                  <p className="font-medium">Correct answer:</p>
-                  <p className="mt-1">{subtitles[currentIndex].text}</p>
+                  <p className="font-medium mb-2">Correct answer:</p>
+                  <p className="text-lg">{subtitles[currentIndex].text}</p>
                 </div>
               )}
             </div>
