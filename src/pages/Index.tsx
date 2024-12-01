@@ -121,6 +121,10 @@ const Index = () => {
     setShowResult(false);
   };
 
+  const handleSpeechInput = (text: string) => {
+    setUserInput(text);
+  };
+
   return (
     <div className="min-h-screen bg-secondary p-4 sm:p-8">
       <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
@@ -153,19 +157,22 @@ const Index = () => {
               onJumpTo={jumpToSentence}
               speechRate={speechRate}
               onSpeechRateChange={setSpeechRate}
+              onUserInput={handleSpeechInput}
             />
 
             <div className="space-y-4 mt-6">
-              <Input
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                placeholder="Type what you hear..."
-                className="w-full"
-              />
+              <div className="relative">
+                <Input
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  placeholder="Type what you hear..."
+                  className="w-full pr-12"
+                />
+              </div>
 
               <Button
                 onClick={checkAnswer}
-                className="w-full"
+                className="w-full bg-primary hover:bg-primary/90 text-white"
                 disabled={showResult}
               >
                 Check Answer
